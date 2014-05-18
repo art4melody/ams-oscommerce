@@ -109,7 +109,7 @@ function amsCreateInvoice($orderId, $price, $options = array()) {
 function amsVerifyCallback($amsPublicKey = false) {
 	global $amsOptions;
 	if (!$amsPublicKey)
-		$amsPublicKey = $amsOptions['amsPublicKey'];		
+		$amsPublicKey = $amsOptions['amsPublicKey'];
 	
 	$post = file_get_contents("php://input");
 	if (!$post)
@@ -123,8 +123,13 @@ function amsVerifyCallback($amsPublicKey = false) {
 	if (!array_key_exists('payload', $json)) 
 		return 'No payload. Invalid format.';
 	
-	$json = $json['payload'];
-	// TODO: verify the data (order total value & signature)
+	$payload = $json['payload'];
+	preg_match('/"payload":(.*), "sign":/', $post, $matches);
+	$payloadString = $matches[1];
+	$sign = base64_decode($json['sign']);
+	$public_key = openssl_get_publickey($amsPublicKey);
+	$verify = openssl_verify($payloadString, $sign, $public_key);
+	if ($verify != 1) return "Not verified";
 	
-	return $json;
+	return $payload;
 }
