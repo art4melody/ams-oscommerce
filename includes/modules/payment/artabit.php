@@ -89,6 +89,12 @@
         if (array_search($order->info['currency'], $currencies) === false) {
           //print 'artabit: currency is not supported';
           $this->enabled = false;
+        } else {
+          $total = $order->info['total'] * $order->info['currency_value'];
+          if ($total < 5000) {
+            //print 'artabit: invoice total < IDR 5000';
+            $this->enabled = false;
+          }
         }
 
          // check that api key is not blank
@@ -130,7 +136,7 @@
 
       // change order status to value selected by merchant
       tep_db_query("update ". TABLE_ORDERS. " set orders_status = " . intval(MODULE_PAYMENT_AMS_UNPAID_STATUS_ID) . " where orders_id = ". intval($insert_id));   
-    $total = $order->info['total'] * $order->info['currency_value'];
+      $total = $order->info['total'] * $order->info['currency_value'];
 
       $options = array(
         'amount_local' => $total,
@@ -138,15 +144,15 @@
         'return_url' => tep_href_link(FILENAME_CHECKOUT_SUCCESS, '', 'SSL'),
         'cancel_url' => tep_href_link(FILENAME_CHECKOUT_PAYMENT, '', 'SSL'),
         'callback_url' => tep_href_link('ams_callback.php', '', 'SSL', true, true),
-    'apiToken' => MODULE_PAYMENT_AMS_APITOKEN,
-    'apiSecret' => MODULE_PAYMENT_AMS_APISECRET
+        'apiToken' => MODULE_PAYMENT_AMS_APITOKEN,
+        'apiSecret' => MODULE_PAYMENT_AMS_APISECRET
       );
     
       $invoice = amsCreateInvoice($insert_id, $total, $options);
 
       if (!is_array($invoice) or array_key_exists('error', $invoice)) {
         tep_remove_order($insert_id, $restock = true);
-    tep_redirect(FILENAME_CHECKOUT_PAYMENT);
+        tep_redirect(FILENAME_CHECKOUT_PAYMENT);
       }
       else {
         $_SESSION['cart']->reset(true);
@@ -182,7 +188,6 @@
         ."values ('Payment Zone', 'MODULE_PAYMENT_AMS_ZONE', '0', 'If a zone is selected, only enable this payment method for that zone.', '6', '2', 'tep_get_zone_class_title', 'tep_cfg_pull_down_zone_classes(', now())");
       tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) "
         ."values ('Sort Order of Display.', 'MODULE_PAYMENT_AMS_SORT_ORDER', '0', 'Sort order of display. Lowest is displayed first.', '6', '2', now())");
-
     }
 
     function remove () {

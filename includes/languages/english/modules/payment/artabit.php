@@ -20,7 +20,7 @@
  */
  
   // Text Messages
-  define('MODULE_PAYMENT_AMS_TEXT_TITLE', 'ArtaBit Merchant Service');
+  define('MODULE_PAYMENT_AMS_TEXT_TITLE', 'Bitcoin ArtaBit Service');
   define('MODULE_PAYMENT_AMS_TEXT_DESCRIPTION', 'Use artabit.com\'s merchant service to accept bitcoin payments.');
 
   
