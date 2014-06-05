@@ -60,13 +60,12 @@ function amsCurl($url, $apiToken, $apiSecret, $post = false) {
 		"Authorization: Basic $auth"
 		);
 
-	curl_setopt($curl, CURLOPT_PORT, 9000);
+	curl_setopt($curl, CURLOPT_PORT, 9443);
 	curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 	curl_setopt($curl, CURLOPT_TIMEOUT, 10);
 	curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-	//SSL not yet enabled in AMS
-	//curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1); // should be 1, verify certificate
-	//curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2); // should be 2, check existence of CN and verify that it matches hostname
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1); // should be 1, verify certificate
+	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2); // should be 2, check existence of CN and verify that it matches hostname
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($curl, CURLOPT_FORBID_REUSE, 1);
 	curl_setopt($curl, CURLOPT_FRESH_CONNECT, 1);
@@ -100,7 +99,7 @@ function amsCreateInvoice($orderId, $price, $options = array()) {
 			$post[$o] = $options[$o];
 	$post = json_encode($post);
 	
-	$response = amsCurl('http://ams.artabit.com/invoices', $options['apiToken'], $options['apiSecret'], $post);
+	$response = amsCurl('https://ams.artabit.com/invoices', $options['apiToken'], $options['apiSecret'], $post);
 	
 	return $response;
 }
