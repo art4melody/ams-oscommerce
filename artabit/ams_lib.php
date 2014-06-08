@@ -99,7 +99,7 @@ function amsCreateInvoice($orderId, $price, $options = array()) {
 			$post[$o] = $options[$o];
 	$post = json_encode($post);
 	
-	$response = amsCurl('https://ams.artabit.com/invoices', $options['apiToken'], $options['apiSecret'], $post);
+	$response = amsCurl('https://transaction.artabit.com/invoices', $options['apiToken'], $options['apiSecret'], $post);
 	
 	return $response;
 }

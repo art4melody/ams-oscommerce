@@ -149,6 +149,10 @@
       );
     
       $invoice = amsCreateInvoice($insert_id, $total, $options);
+      if (MODULE_PAYMENT_AMS_DEBUG == 'True') {
+        var_dump($invoice);
+        die();
+      }
 
       if (!is_array($invoice) or array_key_exists('error', $invoice)) {
         tep_remove_order($insert_id, $restock = true);
@@ -188,6 +192,8 @@
         ."values ('Payment Zone', 'MODULE_PAYMENT_AMS_ZONE', '0', 'If a zone is selected, only enable this payment method for that zone.', '6', '2', 'tep_get_zone_class_title', 'tep_cfg_pull_down_zone_classes(', now())");
       tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) "
         ."values ('Sort Order of Display.', 'MODULE_PAYMENT_AMS_SORT_ORDER', '0', 'Sort order of display. Lowest is displayed first.', '6', '2', now())");
+      tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) "
+        ."values ('Enable Debugging', 'MODULE_PAYMENT_AMS_DEBUG', 'False', 'Enable debugging?', '6', '0', 'tep_cfg_select_option(array(\'True\', \'False\'), ', now());");
     }
 
     function remove () {
@@ -202,6 +208,7 @@
         'MODULE_PAYMENT_AMS_UNPAID_STATUS_ID',
         'MODULE_PAYMENT_AMS_PAID_STATUS_ID',
         'MODULE_PAYMENT_AMS_ZONE',
+        'MODULE_PAYMENT_AMS_DEBUG',
         'MODULE_PAYMENT_AMS_SORT_ORDER');
     }
   }
